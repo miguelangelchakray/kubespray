@@ -19,9 +19,7 @@ spec:
         k8s-app: canal-node
     spec:
       hostNetwork: true
-{% if rbac_enabled %}
       serviceAccountName: canal
-{% endif %}
       tolerations:
         - effect: NoSchedule
           operator: Exists
@@ -30,6 +28,9 @@ spec:
         - name: lib-modules
           hostPath:
             path: /lib/modules
+        - name: var-lib-calico
+          hostPath:
+            path: /var/lib/calico
         - name: var-run-calico
           hostPath:
             path: /var/run/calico
@@ -203,6 +204,9 @@ spec:
               readOnly: true
             - mountPath: /var/run/calico
               name: var-run-calico
+              readOnly: false
+            - mountPath: /var/lib/calico
+              name: var-lib-calico
               readOnly: false
             - name: "canal-certs"
               mountPath: "{{ canal_cert_dir }}"
